@@ -24,7 +24,7 @@ export const ProfileCustomizer: React.FC<ProfileCustomizerProps> = ({ profile, o
             const value = event.target.value
             onProfileChange({
                 ...profile,
-                [key]: value.trim() || DEFAULT_PREVIEW_PROFILE[key],
+                [key]: value,
             })
         }
 
