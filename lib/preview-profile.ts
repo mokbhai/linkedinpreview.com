@@ -11,7 +11,7 @@ export type PreviewProfile = {
 }
 
 export type DraftPayload = {
-    content: any
+    content: unknown
     profile: PreviewProfile
 }
 
@@ -56,7 +56,7 @@ export function normalizeProfile(profile: unknown): PreviewProfile {
     }
 }
 
-export function toDraftPayload(content: any, profile: PreviewProfile): DraftPayload {
+export function toDraftPayload(content: unknown, profile: PreviewProfile): DraftPayload {
     return {
         content,
         profile: normalizeProfile(profile),

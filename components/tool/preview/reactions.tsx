@@ -10,8 +10,8 @@ interface ReactionsProps {
     profile: PreviewProfile
 }
 
-function formatCount(count: number, label: string): string {
-    return `${count.toLocaleString()} ${label}${count === 1 ? '' : 's'}`
+function formatCount(count: number, singularLabel: string, pluralLabel: string): string {
+    return `${count.toLocaleString()} ${count === 1 ? singularLabel : pluralLabel}`
 }
 
 export const Reactions: React.FC<ReactionsProps> = ({ profile }) => {
@@ -29,11 +29,15 @@ export const Reactions: React.FC<ReactionsProps> = ({ profile }) => {
                     src='/images/home/post-reactions.svg'
                 />
                 <span className={cn('font-normal text-[#666]', screenSize === 'mobile' ? 'hidden' : 'text-xs')}>
-                    {formatCount(profile.likes, 'like')}
+                    {formatCount(profile.likes, 'like', 'likes')}
                 </span>
             </div>
             <div className='flex items-center justify-end gap-2'>
-                {[formatCount(profile.comments, 'comment'), '•', formatCount(profile.reposts, 'repost')].map((text) => (
+                {[
+                    formatCount(profile.comments, 'comment', 'comments'),
+                    '•',
+                    formatCount(profile.reposts, 'repost', 'reposts'),
+                ].map((text) => (
                     <span
                         key={text}
                         className={cn('font-normal text-[#666]', screenSize === 'mobile' ? 'text-[10px]' : 'text-xs')}>

@@ -13,7 +13,7 @@ export const UserInfo: React.FC<UserInfoProps> = ({ profile }) => {
             <div className='min-w-0 flex-1'>
                 <div className='flex items-center gap-3'>
                     <span className='relative inline-block shrink-0'>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- dynamic user-provided URLs with fallback are easier with native img */}
                         <img
                             alt={`Profile photo of ${profile.name || DEFAULT_PREVIEW_PROFILE.name}`}
                             className='size-12 rounded-full object-cover'
