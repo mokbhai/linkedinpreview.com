@@ -1,11 +1,20 @@
 import type React from 'react'
 import Image from 'next/image'
 
+import type { PreviewProfile } from '@/lib/preview-profile'
 import { cn } from '@/lib/utils'
 
 import { useScreenSize } from './preview-size-context'
 
-export const Reactions: React.FC = () => {
+interface ReactionsProps {
+    profile: PreviewProfile
+}
+
+function formatCount(count: number, label: string): string {
+    return `${count.toLocaleString()} ${label}${count === 1 ? '' : 's'}`
+}
+
+export const Reactions: React.FC<ReactionsProps> = ({ profile }) => {
     const { screenSize } = useScreenSize()
 
     return (
@@ -20,11 +29,11 @@ export const Reactions: React.FC = () => {
                     src='/images/home/post-reactions.svg'
                 />
                 <span className={cn('font-normal text-[#666]', screenSize === 'mobile' ? 'hidden' : 'text-xs')}>
-                    John Doe and 169 others
+                    {formatCount(profile.likes, 'like')}
                 </span>
             </div>
             <div className='flex items-center justify-end gap-2'>
-                {['4 comments', '•', '1 repost'].map((text) => (
+                {[formatCount(profile.comments, 'comment'), '•', formatCount(profile.reposts, 'repost')].map((text) => (
                     <span
                         key={text}
                         className={cn('font-normal text-[#666]', screenSize === 'mobile' ? 'text-[10px]' : 'text-xs')}>

@@ -33,9 +33,10 @@ A pixel-accurate LinkedIn post preview that updates in real time as the user typ
 
 - `preview-header.tsx` - "Post Preview" title + mobile/tablet/desktop size toggle
 - `preview-size-context.tsx` - React context for screen size state
-- `user-info.tsx` - Mock LinkedIn user profile (avatar, name, title, visibility icon)
+- `profile-customizer.tsx` - Controls for profile name, photo URL, subheading, and engagement counters
+- `user-info.tsx` - LinkedIn user profile header using customizable avatar, name, and title
 - `content-section.tsx` - Renders processed text with 3-line clamp and "...more" expand button
-- `reactions.tsx` - Static LinkedIn reaction icons and counts
+- `reactions.tsx` - LinkedIn reaction icons with customizable likes/comments/reposts counts
 - `action-buttons.tsx` - Static Like/Comment/Share/Send buttons
 
 **Screen sizes:**

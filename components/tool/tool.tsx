@@ -6,6 +6,7 @@ import { Eye, PenLine } from 'lucide-react'
 import { Group, Panel } from 'react-resizable-panels'
 
 import { decodeDraft, encodeDraft } from '@/lib/draft-url'
+import { DEFAULT_PREVIEW_PROFILE, parseDraftPayload, toDraftPayload, type DraftPayload } from '@/lib/preview-profile'
 import { cn } from '@/lib/utils'
 
 import { EditorLoading } from './editor-loading'
@@ -63,16 +64,16 @@ function loadLocalDraft(): any | null {
     }
 }
 
-function useDraftPersistence(content: any) {
+function useDraftPersistence(draft: DraftPayload | null) {
     const timerRef = React.useRef<ReturnType<typeof setTimeout>>(null)
 
     React.useEffect(() => {
-        if (!content) return
+        if (!draft) return
 
         if (timerRef.current) clearTimeout(timerRef.current)
         timerRef.current = setTimeout(() => {
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(content))
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(draft))
             } catch {
                 // localStorage full or unavailable - silently ignore
             }
@@ -81,7 +82,7 @@ function useDraftPersistence(content: any) {
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current)
         }
-    }, [content])
+    }, [draft])
 }
 
 export function Tool({ variant = 'default' }: ToolProps) {
@@ -89,6 +90,7 @@ export function Tool({ variant = 'default' }: ToolProps) {
     const [media, setMedia] = React.useState<Media | null>(null)
     const [mobileTab, setMobileTab] = React.useState<MobileTab>('editor')
     const [initialContent, setInitialContent] = React.useState<any>(undefined)
+    const [profile, setProfile] = React.useState(DEFAULT_PREVIEW_PROFILE)
     const [isLoading, setIsLoading] = React.useState(true)
     const isDesktop = useIsDesktop()
 
@@ -101,14 +103,20 @@ export function Tool({ variant = 'default' }: ToolProps) {
             if (draftParam) {
                 const decoded = await decodeDraft(draftParam)
                 if (decoded) {
-                    setInitialContent(decoded)
+                    const draft = parseDraftPayload(decoded)
+                    setInitialContent(draft.content)
+                    setProfile(draft.profile)
                     setIsLoading(false)
                     return
                 }
             }
 
             const local = loadLocalDraft()
-            if (local) setInitialContent(local)
+            if (local) {
+                const draft = parseDraftPayload(local)
+                setInitialContent(draft.content)
+                setProfile(draft.profile)
+            }
             setIsLoading(false)
         }
         loadDraft()
@@ -121,7 +129,12 @@ export function Tool({ variant = 'default' }: ToolProps) {
         }
     }, [isLoading])
 
-    useDraftPersistence(content)
+    const currentDraft = React.useMemo(() => {
+        if (!content) return null
+        return toDraftPayload(content, profile)
+    }, [content, profile])
+
+    useDraftPersistence(currentDraft)
 
     const handleContentChange = (json: any) => {
         setContent(json)
@@ -133,19 +146,19 @@ export function Tool({ variant = 'default' }: ToolProps) {
 
     const handleShare = React.useCallback(async (): Promise<string | null> => {
         if (!content) return null
-        const encoded = await encodeDraft(content)
+        const encoded = await encodeDraft(toDraftPayload(content, profile))
         if (!encoded) return null
 
         const hash = variant === 'default' ? '#tool' : ''
         return `${window.location.origin}${window.location.pathname}?draft=${encoded}${hash}`
-    }, [content, variant])
+    }, [content, profile, variant])
 
     const handleOpenFeedPreview = React.useCallback(async () => {
         if (!content) return
-        const encoded = await encodeDraft(content)
+        const encoded = await encodeDraft(toDraftPayload(content, profile))
         if (!encoded) return
         window.open(`/preview?draft=${encoded}`, '_blank')
-    }, [content])
+    }, [content, profile])
 
     if (isLoading) {
         return null
@@ -203,6 +216,8 @@ export function Tool({ variant = 'default' }: ToolProps) {
                         <PreviewPanel
                             content={content}
                             media={media}
+                            profile={profile}
+                            onProfileChange={setProfile}
                             onOpenFeedPreview={handleOpenFeedPreview}
                             hasContent={hasTextContent(content)}
                         />
@@ -224,6 +239,8 @@ export function Tool({ variant = 'default' }: ToolProps) {
                             <PreviewPanel
                                 content={content}
                                 media={media}
+                                profile={profile}
+                                onProfileChange={setProfile}
                                 onOpenFeedPreview={handleOpenFeedPreview}
                                 hasContent={hasTextContent(content)}
                             />

@@ -6,6 +6,7 @@ import { ArrowLeft, Share2 } from 'lucide-react'
 import posthog from 'posthog-js'
 
 import { decodeDraft } from '@/lib/draft-url'
+import { DEFAULT_PREVIEW_PROFILE, parseDraftPayload } from '@/lib/preview-profile'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icon'
@@ -27,6 +28,7 @@ interface PreviewPageClientProps {
 export function PreviewPageClient({ encodedDraft }: PreviewPageClientProps) {
     const [mode, setMode] = React.useState<Mode>('desktop')
     const [content, setContent] = React.useState<any>(null)
+    const [profile, setProfile] = React.useState(DEFAULT_PREVIEW_PROFILE)
     const [isLoading, setIsLoading] = React.useState(true)
     const [shareOpen, setShareOpen] = React.useState(false)
     const postRef = React.useRef<HTMLDivElement>(null)
@@ -51,7 +53,9 @@ export function PreviewPageClient({ encodedDraft }: PreviewPageClientProps) {
                 return
             }
             const decoded = await decodeDraft(encodedDraft)
-            setContent(decoded)
+            const draft = parseDraftPayload(decoded)
+            setContent(draft.content)
+            setProfile(draft.profile)
             setIsLoading(false)
         }
         decode()
@@ -145,7 +149,7 @@ export function PreviewPageClient({ encodedDraft }: PreviewPageClientProps) {
                 ) : (
                     <FeedLayout mode={mode}>
                         <div ref={postRef}>
-                            <FeedPostCard content={content} media={null} />
+                            <FeedPostCard content={content} profile={profile} media={null} />
                         </div>
                     </FeedLayout>
                 )}

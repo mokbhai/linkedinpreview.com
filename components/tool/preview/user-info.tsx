@@ -1,29 +1,34 @@
 import type React from 'react'
-import Image from 'next/image'
 
+import { DEFAULT_PROFILE_PHOTO, type PreviewProfile } from '@/lib/preview-profile'
 import { Icon } from '@/components/icon'
 
-export const UserInfo: React.FC = () => {
+interface UserInfoProps {
+    profile: PreviewProfile
+}
+
+export const UserInfo: React.FC<UserInfoProps> = ({ profile }) => {
     return (
         <div className='flex items-center gap-3'>
             <div className='min-w-0 flex-1'>
                 <div className='flex items-center gap-3'>
                     <span className='relative inline-block shrink-0'>
-                        <Image
-                            alt=''
-                            loading='lazy'
-                            width={140}
-                            height={140}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            alt={profile.name}
                             className='size-12 rounded-full object-cover'
-                            src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij4KICA8cGF0aCBmaWxsPSIjZTdlMmRjIiBkPSJNMCAwaDEyOHYxMjhIMHoiLz4KICA8cGF0aCBkPSJNODguNDEgODQuNjdhMzIgMzIgMCAxMC00OC44MiAwIDY2LjEzIDY2LjEzIDAgMDE0OC44MiAweiIgZmlsbD0iIzc4OGZhNSIvPgogIDxwYXRoIGQ9Ik04OC40MSA4NC42N2EzMiAzMiAwIDAxLTQ4LjgyIDBBNjYuNzkgNjYuNzkgMCAwMDAgMTI4aDEyOGE2Ni43OSA2Ni43OSAwIDAwLTM5LjU5LTQzLjMzeiIgZmlsbD0iIzlkYjNjOCIvPgogIDxwYXRoIGQ9Ik02NCA5NmEzMS45MyAzMS45MyAwIDAwMjQuNDEtMTEuMzMgNjYuMTMgNjYuMTMgMCAwMC00OC44MiAwQTMxLjkzIDMxLjkzIDAgMDA2NCA5NnoiIGZpbGw9IiM1NjY4N2EiLz4KPC9zdmc+Cg=='
+                            src={profile.photoUrl || DEFAULT_PROFILE_PHOTO}
+                            onError={(event) => {
+                                event.currentTarget.src = DEFAULT_PROFILE_PHOTO
+                            }}
                         />
                         <span className='absolute right-0 bottom-0 inline-flex size-4 items-center justify-center rounded-full bg-[#1052B8] text-white ring-2 ring-white'>
                             <Icon name='linkedinLogo' className='size-2.5' />
                         </span>
                     </span>
                     <div className='min-w-0 flex-1'>
-                        <p className='truncate text-sm font-semibold text-neutral-900'>Matteo Giardino</p>
-                        <p className='truncate text-xs font-normal text-neutral-500'>Founder @ devv.it</p>
+                        <p className='truncate text-sm font-semibold text-neutral-900'>{profile.name}</p>
+                        <p className='truncate text-xs font-normal text-neutral-500'>{profile.subheading}</p>
                         <div className='flex items-center gap-1'>
                             <span className='text-xs font-normal text-neutral-500'>Now</span>
                             <span className='text-xs font-normal text-neutral-500'>•</span>

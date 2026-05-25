@@ -1,5 +1,6 @@
 import type React from 'react'
 
+import type { PreviewProfile } from '@/lib/preview-profile'
 import { cn } from '@/lib/utils'
 
 import type { Media } from '../tool'
@@ -11,10 +12,11 @@ import { UserInfo } from './user-info'
 interface PostCardProps {
     content: any
     media: Media | null
+    profile: PreviewProfile
     className?: string
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ content, media, className }) => {
+export const PostCard: React.FC<PostCardProps> = ({ content, media, profile, className }) => {
     return (
         <div
             className={cn(
@@ -22,7 +24,7 @@ export const PostCard: React.FC<PostCardProps> = ({ content, media, className })
                 className,
             )}>
             <div className='pt-3 pr-4 pb-1 pl-4'>
-                <UserInfo />
+                <UserInfo profile={profile} />
                 <ContentSection content={content} />
             </div>
             {media && (
@@ -48,7 +50,7 @@ export const PostCard: React.FC<PostCardProps> = ({ content, media, className })
                 </div>
             )}
             <div className='py-2 pr-4 pl-4'>
-                <Reactions />
+                <Reactions profile={profile} />
                 <hr className='mt-3 border-neutral-200' />
                 <ActionButtons />
             </div>

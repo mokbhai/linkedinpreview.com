@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { PenLine } from 'lucide-react'
 
 import { toTipTapParagraphs } from '@/lib/parse-formatted-text'
+import { DEFAULT_PREVIEW_PROFILE } from '@/lib/preview-profile'
 import { Button } from '@/components/ui/button'
 import { ActionButtons } from '@/components/tool/preview/action-buttons'
 import { renderWithHashtags } from '@/components/tool/preview/content-section'
@@ -30,7 +31,7 @@ export function ChatPreviewCard({ text, isStreaming, onOpenInEditor }: ChatPrevi
         <ScreenSizeProvider initialSize='desktop'>
             <div className='border-border shadow-subtle relative max-w-[555px] overflow-hidden rounded-lg border bg-white'>
                 <div className='px-4 pt-3'>
-                    <UserInfo />
+                    <UserInfo profile={DEFAULT_PREVIEW_PROFILE} />
                 </div>
                 <div className='px-4 py-3'>
                     <div className='text-sm whitespace-pre-line text-neutral-900'>
@@ -39,7 +40,7 @@ export function ChatPreviewCard({ text, isStreaming, onOpenInEditor }: ChatPrevi
                     </div>
                 </div>
                 <div className='border-border border-t px-4 py-2'>
-                    <Reactions />
+                    <Reactions profile={DEFAULT_PREVIEW_PROFILE} />
                     <div className='mt-2 flex items-center justify-between'>
                         {onOpenInEditor && !isStreaming ? (
                             <Button

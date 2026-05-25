@@ -2,21 +2,32 @@ import type React from 'react'
 import { CircleHelp, Eye } from 'lucide-react'
 
 import { feedbackConfig } from '@/config/feedback'
+import type { PreviewProfile } from '@/lib/preview-profile'
 import { cn } from '@/lib/utils'
 
 import type { Media } from '../tool'
 import { PostCard } from './post-card'
 import { PreviewHeader } from './preview-header'
 import { ScreenSizeProvider, useScreenSize } from './preview-size-context'
+import { ProfileCustomizer } from './profile-customizer'
 
 interface PreviewPanelProps {
     content: any
     media: Media | null
+    profile: PreviewProfile
+    onProfileChange: (profile: PreviewProfile) => void
     onOpenFeedPreview?: () => void
     hasContent: boolean
 }
 
-const PreviewPanelContent: React.FC<PreviewPanelProps> = ({ content, media, onOpenFeedPreview, hasContent }) => {
+const PreviewPanelContent: React.FC<PreviewPanelProps> = ({
+    content,
+    media,
+    profile,
+    onProfileChange,
+    onOpenFeedPreview,
+    hasContent,
+}) => {
     const { screenSize } = useScreenSize()
 
     const containerWidth = {
@@ -29,8 +40,9 @@ const PreviewPanelContent: React.FC<PreviewPanelProps> = ({ content, media, onOp
         <div className='flex h-full flex-col'>
             <PreviewHeader onOpenFeedPreview={onOpenFeedPreview} hasContent={hasContent} />
             <div className='flex flex-1 flex-col items-center gap-5 overflow-auto bg-neutral-50 py-5'>
+                <ProfileCustomizer profile={profile} onProfileChange={onProfileChange} />
                 <div className={cn('mx-auto transition-all duration-300', containerWidth[screenSize])}>
-                    <PostCard content={content} media={media} />
+                    <PostCard content={content} media={media} profile={profile} />
                 </div>
                 <div className='flex w-full gap-1.5 px-4 text-xs whitespace-nowrap text-neutral-400 sm:justify-center'>
                     <button
@@ -62,12 +74,21 @@ const PreviewPanelContent: React.FC<PreviewPanelProps> = ({ content, media, onOp
     )
 }
 
-export const PreviewPanel: React.FC<PreviewPanelProps> = ({ content, media, onOpenFeedPreview, hasContent }) => {
+export const PreviewPanel: React.FC<PreviewPanelProps> = ({
+    content,
+    media,
+    profile,
+    onProfileChange,
+    onOpenFeedPreview,
+    hasContent,
+}) => {
     return (
         <ScreenSizeProvider>
             <PreviewPanelContent
                 content={content}
                 media={media}
+                profile={profile}
+                onProfileChange={onProfileChange}
                 onOpenFeedPreview={onOpenFeedPreview}
                 hasContent={hasContent}
             />
